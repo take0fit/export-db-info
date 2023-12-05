@@ -1,0 +1,10 @@
+COLUMN_NAME,COLUMN_TYPE,IS_PRIMARY_KEY,IS_NULLABLE,IS_UNIQUE,IS_INDEX,IS_FOREiGN_KEY,FOREiGN_KEY_TABLE,FOREiGN_KEY_COLUMN
+id,bigint unsigned,○,×,×,○,×,×,,
+beautician_id,bigint unsigned,×,×,×,○,×,×,beauticians,id
+money_transfer_request_at,timestamp,×,×,×,×,×,×,,
+beautician_bank_account_id,bigint unsigned,×,×,×,×,×,×,,
+request_money,bigint unsigned,×,×,×,×,×,×,,
+money_transfer_at,timestamp,×,○,×,×,×,×,,
+money_transfer_request_status,int,×,×,×,×,×,×,,
+created_at,timestamp,×,○,×,×,×,×,,
+updated_at,timestamp,×,○,×,×,×,×,,

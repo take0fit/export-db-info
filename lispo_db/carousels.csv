@@ -1,0 +1,8 @@
+COLUMN_NAME,COLUMN_TYPE,IS_PRIMARY_KEY,IS_NULLABLE,IS_UNIQUE,IS_INDEX,IS_FOREiGN_KEY,FOREiGN_KEY_TABLE,FOREiGN_KEY_COLUMN
+id,bigint unsigned,○,×,×,○,×,×,,
+image_url,varchar(255),×,○,×,×,×,×,,
+web_url,varchar(255),×,○,×,×,×,×,,
+publish_at,datetime,×,○,×,×,×,×,,
+end_at,datetime,×,○,×,×,×,×,,
+created_at,timestamp,×,○,×,×,×,×,,
+updated_at,timestamp,×,○,×,×,×,×,,

@@ -1,0 +1,9 @@
+COLUMN_NAME,COLUMN_TYPE,IS_PRIMARY_KEY,IS_NULLABLE,IS_UNIQUE,IS_INDEX,IS_FOREiGN_KEY,FOREiGN_KEY_TABLE,FOREiGN_KEY_COLUMN
+id,bigint unsigned,○,×,×,○,×,×,,
+bank_code,int,×,×,×,×,×,×,,
+branch_code,bigint,×,×,×,×,×,×,,
+name_ruby,varchar(255),×,×,×,○,×,×,,
+zengin_name_ruby,varchar(255),×,○,×,×,×,×,,
+name,varchar(255),×,×,×,○,×,×,,
+created_at,timestamp,×,○,×,×,×,×,,
+updated_at,timestamp,×,○,×,×,×,×,,

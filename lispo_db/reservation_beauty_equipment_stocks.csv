@@ -1,0 +1,11 @@
+COLUMN_NAME,COLUMN_TYPE,IS_PRIMARY_KEY,IS_NULLABLE,IS_UNIQUE,IS_INDEX,IS_FOREiGN_KEY,FOREiGN_KEY_TABLE,FOREiGN_KEY_COLUMN
+reservation_id,bigint unsigned,○,×,×,○,×,×,reservations,id
+beauty_equipment_stock_id,bigint unsigned,○,×,×,○,×,×,beauty_equipment_stocks,id
+price,int,×,×,×,×,×,×,,
+name,varchar(255),×,○,×,×,×,×,,
+beauty_equipment_name,varchar(255),×,○,×,×,×,×,,
+start_time,datetime,×,○,×,×,×,×,,
+end_time,datetime,×,○,×,×,×,×,,
+max_available_time,int unsigned,×,○,×,×,×,×,,
+beauty_equipment_category_id,int,×,○,×,×,×,×,,
+information,text,×,○,×,×,×,×,,

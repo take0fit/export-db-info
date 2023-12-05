@@ -1,0 +1,5 @@
+COLUMN_NAME,COLUMN_TYPE,IS_PRIMARY_KEY,IS_NULLABLE,IS_UNIQUE,IS_INDEX,IS_FOREiGN_KEY,FOREiGN_KEY_TABLE,FOREiGN_KEY_COLUMN
+customer_scheduled_notification_id,bigint unsigned,○,×,×,○,×,×,customer_scheduled_notifications,id
+customer_notification_destination_group_id,bigint unsigned,○,×,×,○,×,×,customer_notification_destination_groups,id
+created_at,timestamp,×,○,×,×,×,×,,
+updated_at,timestamp,×,○,×,×,×,×,,

@@ -1,0 +1,9 @@
+COLUMN_NAME,COLUMN_TYPE,IS_PRIMARY_KEY,IS_NULLABLE,IS_UNIQUE,IS_INDEX,IS_FOREiGN_KEY,FOREiGN_KEY_TABLE,FOREiGN_KEY_COLUMN
+id,bigint unsigned,○,×,×,○,×,×,,
+beautician_id,bigint unsigned,×,×,×,○,×,×,beauticians,id
+name,varchar(255),×,○,×,×,×,×,,
+prefecture_id,tinyint,×,×,×,×,×,×,,
+city,varchar(255),×,×,×,×,×,×,,
+address,varchar(500),×,○,×,×,×,×,,
+created_at,timestamp,×,○,×,×,×,×,,
+updated_at,timestamp,×,○,×,×,×,×,,

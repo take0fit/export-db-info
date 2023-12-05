@@ -1,0 +1,10 @@
+COLUMN_NAME,COLUMN_TYPE,IS_PRIMARY_KEY,IS_NULLABLE,IS_UNIQUE,IS_INDEX,IS_FOREiGN_KEY,FOREiGN_KEY_TABLE,FOREiGN_KEY_COLUMN
+id,varchar(100),○,×,×,○,×,×,,
+user_id,bigint unsigned,×,○,×,○,×,×,,
+client_id,bigint unsigned,×,×,×,×,×,×,,
+name,varchar(255),×,○,×,×,×,×,,
+scopes,text,×,○,×,×,×,×,,
+revoked,tinyint(1),×,×,×,×,×,×,,
+created_at,timestamp,×,○,×,×,×,×,,
+updated_at,timestamp,×,○,×,×,×,×,,
+expires_at,datetime,×,○,×,×,×,×,,

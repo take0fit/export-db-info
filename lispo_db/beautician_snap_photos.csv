@@ -1,0 +1,12 @@
+COLUMN_NAME,COLUMN_TYPE,IS_PRIMARY_KEY,IS_NULLABLE,IS_UNIQUE,IS_INDEX,IS_FOREiGN_KEY,FOREiGN_KEY_TABLE,FOREiGN_KEY_COLUMN
+id,bigint unsigned,○,×,×,○,×,×,,
+beautician_id,bigint unsigned,×,×,×,○,×,×,beauticians,id
+occupation_id,bigint unsigned,×,○,×,○,×,×,occupations,id
+menu_id,bigint unsigned,×,○,×,×,×,×,,
+snap_photo_image,varchar(255),×,○,×,×,×,×,,
+description,text,×,○,×,×,×,×,,
+is_public,tinyint(1),×,×,×,×,×,×,,
+is_search_target,tinyint(1),×,×,×,×,×,×,,
+created_at,timestamp,×,○,×,×,×,×,,
+updated_at,timestamp,×,○,×,×,×,×,,
+deleted_at,timestamp,×,○,×,×,×,×,,

@@ -1,0 +1,7 @@
+COLUMN_NAME,COLUMN_TYPE,IS_PRIMARY_KEY,IS_NULLABLE,IS_UNIQUE,IS_INDEX,IS_FOREiGN_KEY,FOREiGN_KEY_TABLE,FOREiGN_KEY_COLUMN
+id,varchar(255),○,×,×,○,×,×,,
+user_id,bigint unsigned,×,○,×,○,×,×,,
+ip_address,varchar(45),×,○,×,×,×,×,,
+user_agent,text,×,○,×,×,×,×,,
+payload,text,×,×,×,×,×,×,,
+last_activity,int,×,×,×,○,×,×,,

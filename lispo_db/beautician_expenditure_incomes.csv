@@ -1,0 +1,15 @@
+COLUMN_NAME,COLUMN_TYPE,IS_PRIMARY_KEY,IS_NULLABLE,IS_UNIQUE,IS_INDEX,IS_FOREiGN_KEY,FOREiGN_KEY_TABLE,FOREiGN_KEY_COLUMN
+id,bigint unsigned,○,×,×,○,×,×,,
+expenditure_incomes,"decimal(8,2)",×,×,×,×,×,×,,
+expenditure_income_type,tinyint,×,×,×,×,×,×,,
+beautician_id,bigint unsigned,×,×,×,○,×,×,beauticians,id
+customer_id,bigint unsigned,×,○,×,○,×,×,customers,id
+income_category_id,bigint unsigned,×,○,×,○,×,×,menu_categories,id
+expenditure_category_id,bigint unsigned,×,○,×,○,×,×,expenditure_categories,id
+beautician_occupation_id,bigint unsigned,×,○,×,○,×,×,beautician_occupations,id
+content,text,×,○,×,×,×,×,,
+expenditure_name,varchar(255),×,○,×,×,×,×,,
+is_cansel_seat,tinyint,×,×,×,×,×,×,,
+payment_date,date,×,○,×,×,×,×,,
+created_at,timestamp,×,○,×,×,×,×,,
+updated_at,timestamp,×,○,×,×,×,×,,
