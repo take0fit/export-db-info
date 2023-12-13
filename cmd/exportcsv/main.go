@@ -20,14 +20,22 @@ func main() {
 		log.Fatalf("faild get db info: %v", err)
 	}
 
+	baseCsvDir := os.Getenv("CSV_DIRECTORY")
+	if baseCsvDir == "" {
+		log.Fatal("CSV_DIRECTORY environment variable is not set.")
+	}
+
+	// DBネームを仕様したい場合はコメントアウト（スプシにインポートする際に環境変数変更する必要あり）
+	// newDbDirPath := filepath.Join(baseCsvDir, dbInfo.Name)
+
 	// 出力ディレクトリの作成
-	if err := os.Mkdir(dbInfo.Name, 0755); err != nil {
+	if err := os.MkdirAll(baseCsvDir, 0755); err != nil {
 		log.Fatalf("Could not create directory: %v", err)
 	}
 
 	for _, table := range dbInfo.Tables {
 		// CSVファイルのパス
-		csvPath := fmt.Sprintf("%s/%s.csv", dbInfo.Name, table.Name)
+		csvPath := fmt.Sprintf("%s/%s.csv", baseCsvDir, table.Name)
 
 		// CSVファイルの作成
 		csvFile, err := os.Create(csvPath)
