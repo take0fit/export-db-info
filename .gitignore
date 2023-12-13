@@ -25,3 +25,8 @@ go.work
 .idea
 
 secrets
+
+csv_directory/*
+
+cmd/exportcsv/exportcsv
+cmd/importsheets/importsheets

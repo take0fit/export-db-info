@@ -1,7 +1,0 @@
-COLUMN_NAME,COLUMN_TYPE,IS_PRIMARY_KEY,IS_NULLABLE,IS_UNIQUE,IS_INDEX,IS_FOREiGN_KEY,FOREiGN_KEY_TABLE,FOREiGN_KEY_COLUMN
-id,varchar(100),○,×,×,○,×,×,,
-user_id,bigint unsigned,×,×,×,○,×,×,,
-client_id,bigint unsigned,×,×,×,×,×,×,,
-scopes,text,×,○,×,×,×,×,,
-revoked,tinyint(1),×,×,×,×,×,×,,
-expires_at,datetime,×,○,×,×,×,×,,

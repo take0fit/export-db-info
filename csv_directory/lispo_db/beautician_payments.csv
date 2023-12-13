@@ -1,9 +1,0 @@
-COLUMN_NAME,COLUMN_TYPE,IS_PRIMARY_KEY,IS_NULLABLE,IS_UNIQUE,IS_INDEX,IS_FOREiGN_KEY,FOREiGN_KEY_TABLE,FOREiGN_KEY_COLUMN
-id,bigint unsigned,○,×,×,○,×,×,,
-payment_at,datetime,×,×,×,×,×,×,,
-credit_card_payment_amount,"decimal(9,2)",×,×,×,×,×,×,,
-balance_payment_amount,"decimal(9,2)",×,×,×,×,×,×,,
-payment_type_id,tinyint,×,○,×,×,×,×,,
-payjp_charge_id,varchar(255),×,○,×,×,×,×,,
-created_at,timestamp,×,○,×,×,×,×,,
-updated_at,timestamp,×,○,×,×,×,×,,

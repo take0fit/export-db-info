@@ -1,9 +1,0 @@
-COLUMN_NAME,COLUMN_TYPE,IS_PRIMARY_KEY,IS_NULLABLE,IS_UNIQUE,IS_INDEX,IS_FOREiGN_KEY,FOREiGN_KEY_TABLE,FOREiGN_KEY_COLUMN
-id,bigint unsigned,○,×,×,○,×,×,,
-beautician_id,bigint unsigned,×,×,×,○,×,×,beauticians,id
-area_id,bigint unsigned,×,×,×,○,×,×,areas,id
-beautician_working_share_salon_id,bigint unsigned,×,×,×,○,×,×,beautician_working_share_salons,id
-date,date,×,×,×,×,×,×,,
-is_repeat,tinyint(1),×,×,×,×,×,×,,
-created_at,timestamp,×,○,×,×,×,×,,
-updated_at,timestamp,×,○,×,×,×,×,,

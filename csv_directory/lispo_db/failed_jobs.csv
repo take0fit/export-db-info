@@ -1,8 +1,0 @@
-COLUMN_NAME,COLUMN_TYPE,IS_PRIMARY_KEY,IS_NULLABLE,IS_UNIQUE,IS_INDEX,IS_FOREiGN_KEY,FOREiGN_KEY_TABLE,FOREiGN_KEY_COLUMN
-id,bigint unsigned,○,×,×,○,×,×,,
-uuid,varchar(255),×,×,○,○,○,×,,
-connection,text,×,×,×,×,×,×,,
-queue,text,×,×,×,×,×,×,,
-payload,longtext,×,×,×,×,×,×,,
-exception,longtext,×,×,×,×,×,×,,
-failed_at,timestamp,×,×,×,×,×,×,,

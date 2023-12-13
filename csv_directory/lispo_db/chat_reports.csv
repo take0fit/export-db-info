@@ -1,9 +1,0 @@
-COLUMN_NAME,COLUMN_TYPE,IS_PRIMARY_KEY,IS_NULLABLE,IS_UNIQUE,IS_INDEX,IS_FOREiGN_KEY,FOREiGN_KEY_TABLE,FOREiGN_KEY_COLUMN
-id,bigint unsigned,○,×,×,○,×,×,,
-beautician_customer_chat_id,bigint unsigned,×,×,×,○,×,×,beautician_customer_chats,id
-chat_report_reason_id,bigint unsigned,×,×,×,○,×,×,chat_report_reasons,id
-detail,varchar(1000),×,○,×,×,×,×,,
-reporter_type,tinyint,×,×,×,×,×,×,,
-status,tinyint,×,×,×,×,×,×,,
-created_at,timestamp,×,○,×,×,×,×,,
-updated_at,timestamp,×,○,×,×,×,×,,
