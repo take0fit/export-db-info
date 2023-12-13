@@ -1,0 +1,13 @@
+COLUMN_NAME,COLUMN_TYPE,IS_PRIMARY_KEY,IS_NULLABLE,IS_UNIQUE,IS_INDEX,IS_FOREiGN_KEY,FOREiGN_KEY_TABLE,FOREiGN_KEY_COLUMN
+id,bigint unsigned,○,×,×,○,×,×,,
+beautician_sale_id,bigint unsigned,×,×,×,○,×,×,beautician_sales,id
+menu_id,bigint unsigned,×,○,×,○,×,×,menus,id
+created_at,timestamp,×,○,×,×,×,×,,
+updated_at,timestamp,×,○,×,×,×,×,,
+deleted_at,timestamp,×,○,×,×,×,×,,
+price,int,×,×,×,×,×,×,,
+name,varchar(255),×,○,×,×,×,×,,
+price_type,tinyint,×,○,×,×,×,×,,
+treatment_time,int,×,○,×,×,×,×,,
+explanation,text,×,○,×,×,×,×,,
+category_name,varchar(255),×,○,×,×,×,×,,

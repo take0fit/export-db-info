@@ -1,0 +1,6 @@
+COLUMN_NAME,COLUMN_TYPE,IS_PRIMARY_KEY,IS_NULLABLE,IS_UNIQUE,IS_INDEX,IS_FOREiGN_KEY,FOREiGN_KEY_TABLE,FOREiGN_KEY_COLUMN
+customer_id,bigint unsigned,○,×,×,○,×,×,,
+customer_notification_id,bigint unsigned,○,×,×,○,×,×,customer_notifications,id
+is_read,tinyint(1),×,×,×,×,×,×,,
+created_at,timestamp,×,○,×,×,×,×,,
+updated_at,timestamp,×,○,×,×,×,×,,

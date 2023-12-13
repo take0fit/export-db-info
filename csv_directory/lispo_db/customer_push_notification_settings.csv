@@ -1,0 +1,13 @@
+COLUMN_NAME,COLUMN_TYPE,IS_PRIMARY_KEY,IS_NULLABLE,IS_UNIQUE,IS_INDEX,IS_FOREiGN_KEY,FOREiGN_KEY_TABLE,FOREiGN_KEY_COLUMN
+id,bigint unsigned,○,×,×,○,×,×,,
+customer_id,bigint unsigned,×,×,×,○,×,×,customers,id
+is_all,tinyint(1),×,×,×,×,×,×,,
+is_notice_from_management,tinyint(1),×,×,×,×,×,×,,
+is_chat_from_management,tinyint(1),×,×,×,×,×,×,,
+is_chat_from_beautician,tinyint(1),×,×,×,×,×,×,,
+is_review_reply,tinyint(1),×,×,×,×,×,×,,
+is_menu_update,tinyint(1),×,×,×,×,×,×,,
+is_snapphoto_update,tinyint(1),×,×,×,×,×,×,,
+is_reservation_completed,tinyint(1),×,×,×,×,×,×,,
+created_at,timestamp,×,○,×,×,×,×,,
+updated_at,timestamp,×,○,×,×,×,×,,

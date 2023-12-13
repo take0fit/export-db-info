@@ -1,9 +1,0 @@
-COLUMN_NAME,COLUMN_TYPE,IS_PRIMARY_KEY,IS_NULLABLE,IS_UNIQUE,IS_INDEX,IS_FOREiGN_KEY,FOREiGN_KEY_TABLE,FOREiGN_KEY_COLUMN
-id,bigint unsigned,○,×,×,○,×,×,,
-category_id,bigint unsigned,×,×,×,○,×,×,faq_categories,id
-title,varchar(500),×,×,×,×,×,×,,
-video_url,varchar(500),×,○,×,×,×,×,,
-pdf_url,varchar(500),×,○,×,×,×,×,,
-content,text,×,×,×,×,×,×,,
-created_at,timestamp,×,○,×,×,×,×,,
-updated_at,timestamp,×,○,×,×,×,×,,

@@ -1,0 +1,9 @@
+COLUMN_NAME,COLUMN_TYPE,IS_PRIMARY_KEY,IS_NULLABLE,IS_UNIQUE,IS_INDEX,IS_FOREiGN_KEY,FOREiGN_KEY_TABLE,FOREiGN_KEY_COLUMN
+id,bigint unsigned,○,×,×,○,×,×,,
+category_name,varchar(255),×,×,×,×,×,×,,
+category_image_id,bigint unsigned,×,×,×,×,×,×,,
+occupation_id,bigint unsigned,×,×,×,×,×,×,,
+sort,tinyint,×,×,×,×,×,×,,
+is_discount,tinyint(1),×,×,×,×,×,×,,
+created_at,timestamp,×,○,×,×,×,×,,
+updated_at,timestamp,×,○,×,×,×,×,,

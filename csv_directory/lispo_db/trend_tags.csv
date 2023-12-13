@@ -1,0 +1,10 @@
+COLUMN_NAME,COLUMN_TYPE,IS_PRIMARY_KEY,IS_NULLABLE,IS_UNIQUE,IS_INDEX,IS_FOREiGN_KEY,FOREiGN_KEY_TABLE,FOREiGN_KEY_COLUMN
+id,bigint unsigned,○,×,×,○,×,×,,
+occupation_tag_group_id,bigint unsigned,×,×,×,○,×,×,occupation_tag_groups,id
+name,varchar(255),×,×,×,×,×,×,,
+start_on,datetime,×,○,×,×,×,×,,
+end_on,datetime,×,○,×,×,×,×,,
+is_public,tinyint(1),×,×,×,×,×,×,,
+created_at,timestamp,×,○,×,×,×,×,,
+updated_at,timestamp,×,○,×,×,×,×,,
+deleted_at,timestamp,×,○,×,×,×,×,,

@@ -14,10 +14,18 @@ func InitializeSheetsClient(ctx context.Context, credentialsFilePath string) (*s
 	if err != nil {
 		return nil, err
 	}
+
 	config, err := google.JWTConfigFromJSON(b, sheets.SpreadsheetsScope)
 	if err != nil {
 		return nil, err
 	}
-	client := config.Client(ctx)
-	return sheets.NewService(ctx, option.WithHTTPClient(client))
+
+	ts := config.TokenSource(ctx)
+
+	srv, err := sheets.NewService(ctx, option.WithTokenSource(ts))
+	if err != nil {
+		return nil, err
+	}
+
+	return srv, nil
 }

@@ -1,0 +1,8 @@
+COLUMN_NAME,COLUMN_TYPE,IS_PRIMARY_KEY,IS_NULLABLE,IS_UNIQUE,IS_INDEX,IS_FOREiGN_KEY,FOREiGN_KEY_TABLE,FOREiGN_KEY_COLUMN
+id,bigint unsigned,○,×,×,○,×,×,,
+smaregi_customer_id,varchar(255),×,×,×,×,×,×,,
+beautician_id,bigint unsigned,×,×,×,○,×,×,beauticians,id
+salon_id,bigint unsigned,×,×,×,○,×,×,salons,id
+created_at,timestamp,×,○,×,×,×,×,,
+updated_at,timestamp,×,○,×,×,×,×,,
+deleted_at,timestamp,×,○,×,×,×,×,,

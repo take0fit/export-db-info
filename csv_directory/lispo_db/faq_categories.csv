@@ -1,0 +1,8 @@
+COLUMN_NAME,COLUMN_TYPE,IS_PRIMARY_KEY,IS_NULLABLE,IS_UNIQUE,IS_INDEX,IS_FOREiGN_KEY,FOREiGN_KEY_TABLE,FOREiGN_KEY_COLUMN
+id,bigint unsigned,○,×,×,○,×,×,,
+category_name,varchar(255),×,×,×,×,×,×,,
+other_category_name,varchar(255),×,○,×,×,×,×,,
+sort,tinyint,×,○,×,×,×,×,,
+target_type,tinyint,×,○,×,×,×,×,,
+created_at,timestamp,×,○,×,×,×,×,,
+updated_at,timestamp,×,○,×,×,×,×,,

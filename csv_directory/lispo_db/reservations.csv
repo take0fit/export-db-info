@@ -1,0 +1,27 @@
+COLUMN_NAME,COLUMN_TYPE,IS_PRIMARY_KEY,IS_NULLABLE,IS_UNIQUE,IS_INDEX,IS_FOREiGN_KEY,FOREiGN_KEY_TABLE,FOREiGN_KEY_COLUMN
+id,bigint unsigned,○,×,×,○,×,×,,
+beautician_id,bigint unsigned,×,×,×,○,×,×,beauticians,id
+seat_name,varchar(255),×,○,×,×,×,×,,
+customer_id,bigint unsigned,×,○,×,○,×,×,customers,id
+beautician_payment_id,bigint unsigned,×,○,×,○,×,×,beautician_payments,id
+beautician_invoice_id,bigint unsigned,×,○,×,○,×,×,beautician_invoices,id
+treatment_date,datetime,×,○,×,×,×,×,,
+parent_reservation_id,int,×,○,×,×,×,×,,
+operation_memo,text,×,○,×,×,×,×,,
+created_at,timestamp,×,○,×,×,×,×,,
+updated_at,timestamp,×,○,×,×,×,×,,
+deleted_at,timestamp,×,○,×,×,×,×,,
+reserved_member_type,tinyint,×,○,×,×,×,×,,
+total_price,int,×,×,×,×,×,×,,
+start_time,datetime,×,○,×,×,×,×,,
+end_time,datetime,×,○,×,×,×,×,,
+reservation_time,"double(8,2)",×,×,×,×,×,×,,
+salon_seat_id,bigint unsigned,×,○,×,○,×,×,salon_seats,id
+beautician_sale_id,bigint unsigned,×,○,×,○,×,×,beautician_sales,id
+salon_id,bigint unsigned,×,○,×,○,×,×,salons,id
+room_id,bigint unsigned,×,○,×,○,×,×,rooms,id
+beautician_working_share_salon_id,bigint unsigned,×,○,×,○,×,×,beautician_working_share_salons,id
+working_share_salon_name,varchar(255),×,○,×,×,×,×,,
+is_payable,tinyint(1),×,×,×,×,×,×,,
+is_customer_cancel,tinyint(1),×,×,×,×,×,×,,
+cancel_notified_at,datetime,×,○,×,×,×,×,,

@@ -1,0 +1,11 @@
+COLUMN_NAME,COLUMN_TYPE,IS_PRIMARY_KEY,IS_NULLABLE,IS_UNIQUE,IS_INDEX,IS_FOREiGN_KEY,FOREiGN_KEY_TABLE,FOREiGN_KEY_COLUMN
+id,int unsigned,○,×,×,○,×,×,,
+beautician_id,int unsigned,×,○,×,○,×,×,,
+operator_id,int unsigned,×,○,×,○,×,×,,
+inquiry_topic_id,int unsigned,×,○,×,○,×,×,,
+email_address,varchar(254),×,×,×,×,×,×,,
+memo,varchar(255),×,○,×,×,×,×,,
+body,varchar(3000),×,×,×,×,×,×,,
+status,"enum('waiting','in_progress','completed')",×,×,×,×,×,×,,
+created_at,timestamp,×,○,×,×,×,×,,
+updated_at,timestamp,×,○,×,×,×,×,,

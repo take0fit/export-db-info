@@ -1,0 +1,9 @@
+COLUMN_NAME,COLUMN_TYPE,IS_PRIMARY_KEY,IS_NULLABLE,IS_UNIQUE,IS_INDEX,IS_FOREiGN_KEY,FOREiGN_KEY_TABLE,FOREiGN_KEY_COLUMN
+id,bigint unsigned,○,×,×,○,×,×,,
+subscription_id,bigint unsigned,×,×,○,○,○,×,,
+stripe_id,varchar(255),×,×,○,○,○,×,,
+stripe_product,varchar(255),×,×,×,×,×,×,,
+stripe_price,varchar(255),×,×,○,○,○,×,,
+quantity,int,×,○,×,×,×,×,,
+created_at,timestamp,×,○,×,×,×,×,,
+updated_at,timestamp,×,○,×,×,×,×,,

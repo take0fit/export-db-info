@@ -1,8 +1,0 @@
-COLUMN_NAME,COLUMN_TYPE,IS_PRIMARY_KEY,IS_NULLABLE,IS_UNIQUE,IS_INDEX,IS_FOREiGN_KEY,FOREiGN_KEY_TABLE,FOREiGN_KEY_COLUMN
-id,bigint unsigned,○,×,×,○,×,×,,
-occupation_tag_group_id,bigint unsigned,×,×,×,○,×,×,occupation_tag_groups,id
-name,varchar(255),×,×,×,×,×,×,,
-can_select_customer,tinyint(1),×,×,×,×,×,×,,
-can_select_beautician,tinyint(1),×,×,×,×,×,×,,
-can_select_menu,tinyint(1),×,×,×,×,×,×,,
-can_select_snap_photo,tinyint(1),×,×,×,×,×,×,,

@@ -1,0 +1,10 @@
+COLUMN_NAME,COLUMN_TYPE,IS_PRIMARY_KEY,IS_NULLABLE,IS_UNIQUE,IS_INDEX,IS_FOREiGN_KEY,FOREiGN_KEY_TABLE,FOREiGN_KEY_COLUMN
+id,bigint unsigned,○,×,×,○,×,×,,
+name,varchar(255),×,×,×,×,×,×,,
+seat_type,tinyint,×,○,×,×,×,×,,
+price_type,tinyint,×,○,×,×,×,×,,
+salon_id,bigint unsigned,×,×,×,○,×,×,salons,id
+room_id,bigint unsigned,×,○,×,○,×,×,rooms,id
+expenditure_item_id,bigint unsigned,×,○,×,○,×,×,expenditure_items,id
+created_at,timestamp,×,○,×,×,×,×,,
+updated_at,timestamp,×,○,×,×,×,×,,
