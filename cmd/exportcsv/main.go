@@ -84,7 +84,6 @@ func main() {
 				isNullable,
 				isUnique,
 				isIndexed,
-				isUnique,
 				isForeign,
 				col.ForeignKeyTable,
 				col.ForeignKeyColumn,
