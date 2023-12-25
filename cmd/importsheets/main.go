@@ -3,13 +3,19 @@ package main
 import (
 	"context"
 	"encoding/csv"
-	"export-db-info/pkg/lib/google_sheets"
+	"export-db-info/internal/google_internal"
+	"export-db-info/internal/model/google_model"
+	"export-db-info/pkg/lib/google"
 	"fmt"
+	"google.golang.org/api/drive/v3"
 	"google.golang.org/api/sheets/v4"
 	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
+	"strconv"
+	"strings"
+	"time"
 )
 
 func main() {
@@ -18,7 +24,7 @@ func main() {
 	serviceAccountKeyFile := os.Getenv("GOOGLE_SERVICE_ACCOUNT_KEY_FILE")
 
 	// Google Sheets APIクライアントの初期化
-	srv, err := google_sheets.InitializeSheetsClient(ctx, serviceAccountKeyFile)
+	sheSrv, err := google.InitializeSheetsClient(ctx, serviceAccountKeyFile)
 	if err != nil {
 		log.Fatalf("Error initializing Google Sheets client: %v", err)
 	}
@@ -30,7 +36,37 @@ func main() {
 		log.Fatalf("Unable to read directory: %v", err)
 	}
 
-	spreadsheetId := "your_spreadsheet_id" // スプレッドシートID
+	lastPass := filepath.Base(csvDir)
+
+	spreadsheet := &sheets.Spreadsheet{
+		Properties: &sheets.SpreadsheetProperties{
+			Title: lastPass,
+		},
+	}
+
+	createdSpreadsheet, err := sheSrv.Spreadsheets.Create(spreadsheet).Do()
+	if err != nil {
+		log.Fatalf("Unable to create spreadsheet. %v", err)
+	}
+
+	spreadsheetId := createdSpreadsheet.SpreadsheetId
+
+	// 共有設定のリクエスト
+	permission := &drive.Permission{
+		Type:         "user",
+		Role:         "writer",
+		EmailAddress: os.Getenv("GOOGLE_SERVICE_ACCOUNT_EMAIL"), // 共有するユーザーのメールアドレス
+	}
+
+	// Google Drive APIクライアントの初期化
+	drvSrv, err := google.InitializeDriveClient(ctx, serviceAccountKeyFile)
+
+	_, err = drvSrv.Permissions.Create(spreadsheetId, permission).Do()
+	if err != nil {
+		log.Fatalf("Unable to create permission: %v", err)
+	}
+
+	log.Println("Spreadsheet shared successfully.")
 
 	for _, file := range files {
 		if filepath.Ext(file.Name()) == ".csv" {
@@ -49,149 +85,21 @@ func main() {
 				continue
 			}
 
-			// 新しいシートの作成
+			tableName := strings.TrimSuffix(file.Name(), ".csv")
+
 			newSheet := &sheets.SheetProperties{
-				Title: file.Name(),
+				Title: tableName,
 			}
 			addSheetRequest := &sheets.AddSheetRequest{
 				Properties: newSheet,
 			}
-
-			sheetTitle := "テーブル仕様書" // 新しいシートのタイトル
-
-			requests := []*sheets.Request{
-				// シートのタイトルを設定
-				{
-					AddSheet: &sheets.AddSheetRequest{
-						Properties: &sheets.SheetProperties{
-							Title: sheetTitle,
-						},
-					},
-				},
-				// セルの結合: A1:C1
-				{
-					MergeCells: &sheets.MergeCellsRequest{
-						Range: &sheets.GridRange{
-							SheetId:          0, // 新しいシートのIDが0であることを仮定
-							StartRowIndex:    0,
-							EndRowIndex:      1,
-							StartColumnIndex: 0,
-							EndColumnIndex:   3,
-						},
-						MergeType: "MERGE_ALL",
-					},
-				},
-				// セルの結合: D1:F1
-				{
-					MergeCells: &sheets.MergeCellsRequest{
-						Range: &sheets.GridRange{
-							SheetId:          0,
-							StartRowIndex:    0,
-							EndRowIndex:      1,
-							StartColumnIndex: 3,
-							EndColumnIndex:   6,
-						},
-						MergeType: "MERGE_ALL",
-					},
-				},
-				// セルの結合: G1:K1
-				{
-					MergeCells: &sheets.MergeCellsRequest{
-						Range: &sheets.GridRange{
-							SheetId:          0,
-							StartRowIndex:    0,
-							EndRowIndex:      1,
-							StartColumnIndex: 6,
-							EndColumnIndex:   11,
-						},
-						MergeType: "MERGE_ALL",
-					},
-				},
-				// セルの背景色の設定: A1:K1
-				{
-					RepeatCell: &sheets.RepeatCellRequest{
-						Range: &sheets.GridRange{
-							SheetId:          0,
-							StartRowIndex:    0,
-							EndRowIndex:      2, // 2行目までの範囲で背景色を設定
-							StartColumnIndex: 0,
-							EndColumnIndex:   11,
-						},
-						Cell: &sheets.CellData{
-							UserEnteredFormat: &sheets.CellFormat{
-								BackgroundColor: &sheets.Color{
-									Red:   0.0,
-									Green: 0.0,
-									Blue:  0.0,
-								},
-								HorizontalAlignment: "CENTER", // 中央揃え
-								TextFormat: &sheets.TextFormat{
-									ForegroundColor: &sheets.Color{
-										Red:   1.0,
-										Green: 1.0,
-										Blue:  1.0,
-									},
-									FontSize: 12,
-									Bold:     true,
-								},
-							},
-						},
-						Fields: "userEnteredFormat(backgroundColor,textFormat,horizontalAlignment)",
-					},
-				},
-				// A1:C1にテキスト「テーブル仕様書」を挿入
-				{
-					UpdateCells: &sheets.UpdateCellsRequest{
-						Start: &sheets.GridCoordinate{
-							SheetId:     0,
-							RowIndex:    0, // 1行目
-							ColumnIndex: 0, // A列
-						},
-						Rows: []*sheets.RowData{
-							{
-								Values: []*sheets.CellData{
-									{
-										UserEnteredValue: &sheets.ExtendedValue{
-											StringValue: &sheetTitle,
-										},
-									},
-								},
-							},
-						},
-						Fields: "userEnteredValue",
-					},
-				},
-				// D1:F1にテキスト「テーブル」を挿入
-				{
-					UpdateCells: &sheets.UpdateCellsRequest{
-						Start: &sheets.GridCoordinate{
-							SheetId:     0,
-							RowIndex:    0, // 1行目
-							ColumnIndex: 3, // D列
-						},
-						Rows: []*sheets.RowData{
-							{
-								Values: []*sheets.CellData{
-									{
-										UserEnteredValue: &sheets.ExtendedValue{
-											StringValue: &sheetTitle,
-										},
-									},
-								},
-							},
-						},
-						Fields: "userEnteredValue",
-					},
-				},
-				{
-					AddSheet: addSheetRequest,
-				},
-			}
-
 			batchUpdateRequest := &sheets.BatchUpdateSpreadsheetRequest{
-				Requests: requests,
+				Requests: []*sheets.Request{{
+					AddSheet: addSheetRequest,
+				}},
 			}
-			resp, err := srv.Spreadsheets.BatchUpdate(spreadsheetId, batchUpdateRequest).Do()
+
+			resp, err := sheSrv.Spreadsheets.BatchUpdate(spreadsheetId, batchUpdateRequest).Do()
 			if err != nil {
 				log.Printf("Unable to create new sheet: %v", err)
 				continue
@@ -207,25 +115,557 @@ func main() {
 
 			fmt.Println(newSheetId)
 
-			// データの書き込み
-			var vr sheets.ValueRange
-			for _, record := range records {
-				// record（[]string）を[]interface{}に変換
-				var interfaceRecord []interface{}
-				for _, field := range record {
-					interfaceRecord = append(interfaceRecord, field)
+			var requests []*sheets.Request
+
+			// セルの範囲オプションを設定
+			rangeOption := &google_model.RangeOption{
+				StartRow: 0, EndRow: 2, StartCol: 0, EndCol: 3,
+			}
+
+			requests = append(
+				requests,
+				google_internal.CreateSheetLayoutRequest(
+					newSheetId,
+					rangeOption,
+					true,     // セルの結合
+					"CENTER", // 水平方向の配置
+					"MIDDLE", // 垂直方向の配置
+					&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25}, // 背景色
+					&sheets.Color{Red: 1, Green: 1, Blue: 1},          // テキスト色
+					"テーブル仕様書",                                         // セルに挿入するテキスト
+					&sheets.TextFormat{FontSize: 10, Bold: true},      // テキストフォーマット
+				)...,
+			)
+
+			requests = append(
+				requests,
+				google_internal.CreateSheetLayoutRequest(
+					newSheetId,
+					&google_model.RangeOption{StartRow: 0, EndRow: 1, StartCol: 3, EndCol: 5},
+					true,
+					"CENTER",
+					"MIDDLE",
+					&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
+					&sheets.Color{Red: 1, Green: 1, Blue: 1},
+					"テーブル論理名",
+					&sheets.TextFormat{FontSize: 10, Bold: false},
+				)...,
+			)
+
+			requests = append(
+				requests,
+				google_internal.CreateSheetLayoutRequest(
+					newSheetId,
+					&google_model.RangeOption{StartRow: 1, EndRow: 2, StartCol: 3, EndCol: 5},
+					true,
+					"CENTER",
+					"MIDDLE",
+					&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
+					&sheets.Color{Red: 1, Green: 1, Blue: 1},
+					"テーブル物理名",
+					&sheets.TextFormat{FontSize: 10, Bold: false},
+				)...,
+			)
+
+			requests = append(
+				requests,
+				google_internal.CreateSheetLayoutRequest(
+					newSheetId,
+					&google_model.RangeOption{StartRow: 0, EndRow: 1, StartCol: 5, EndCol: 8},
+					true,
+					"CENTER",
+					"MIDDLE",
+					&sheets.Color{Red: 1, Green: 1, Blue: 1},
+					nil,
+					"",
+					&sheets.TextFormat{FontSize: 10, Bold: false},
+				)...,
+			)
+
+			requests = append(
+				requests,
+				google_internal.CreateSheetLayoutRequest(
+					newSheetId,
+					&google_model.RangeOption{StartRow: 1, EndRow: 2, StartCol: 5, EndCol: 8},
+					true,
+					"CENTER",
+					"MIDDLE",
+					&sheets.Color{Red: 1, Green: 1, Blue: 1},
+					nil,
+					tableName,
+					&sheets.TextFormat{FontSize: 10, Bold: false},
+				)...,
+			)
+
+			requests = append(
+				requests,
+				google_internal.CreateSheetLayoutRequest(
+					newSheetId,
+					&google_model.RangeOption{StartRow: 0, EndRow: 1, StartCol: 8, EndCol: 9},
+					true,
+					"CENTER",
+					"MIDDLE",
+					&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
+					&sheets.Color{Red: 1, Green: 1, Blue: 1},
+					"作成者",
+					&sheets.TextFormat{FontSize: 10, Bold: false},
+				)...,
+			)
+
+			requests = append(
+				requests,
+				google_internal.CreateSheetLayoutRequest(
+					newSheetId,
+					&google_model.RangeOption{StartRow: 0, EndRow: 1, StartCol: 9, EndCol: 10},
+					true,
+					"CENTER",
+					"MIDDLE",
+					&sheets.Color{Red: 1, Green: 1, Blue: 1},
+					nil,
+					"",
+					&sheets.TextFormat{FontSize: 10, Bold: false},
+				)...,
+			)
+
+			requests = append(
+				requests,
+				google_internal.CreateSheetLayoutRequest(
+					newSheetId,
+					&google_model.RangeOption{StartRow: 0, EndRow: 1, StartCol: 10, EndCol: 11},
+					true,
+					"CENTER",
+					"MIDDLE",
+					&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
+					&sheets.Color{Red: 1, Green: 1, Blue: 1},
+					"修正者",
+					&sheets.TextFormat{FontSize: 10, Bold: false},
+				)...,
+			)
+
+			requests = append(
+				requests,
+				google_internal.CreateSheetLayoutRequest(
+					newSheetId,
+					&google_model.RangeOption{StartRow: 0, EndRow: 1, StartCol: 11, EndCol: 12},
+					true,
+					"CENTER",
+					"MIDDLE",
+					&sheets.Color{Red: 1, Green: 1, Blue: 1},
+					nil,
+					"",
+					&sheets.TextFormat{FontSize: 10, Bold: false},
+				)...,
+			)
+
+			requests = append(
+				requests,
+				google_internal.CreateSheetLayoutRequest(
+					newSheetId,
+					&google_model.RangeOption{StartRow: 1, EndRow: 2, StartCol: 8, EndCol: 9},
+					true,
+					"CENTER",
+					"MIDDLE",
+					&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
+					&sheets.Color{Red: 1, Green: 1, Blue: 1},
+					"作成日",
+					&sheets.TextFormat{FontSize: 10, Bold: false},
+				)...,
+			)
+
+			requests = append(
+				requests,
+				google_internal.CreateSheetLayoutRequest(
+					newSheetId,
+					&google_model.RangeOption{StartRow: 1, EndRow: 2, StartCol: 9, EndCol: 10},
+					true,
+					"CENTER",
+					"MIDDLE",
+					&sheets.Color{Red: 1, Green: 1, Blue: 1},
+					nil,
+					"",
+					&sheets.TextFormat{FontSize: 10, Bold: false},
+				)...,
+			)
+
+			requests = append(
+				requests,
+				google_internal.CreateSheetLayoutRequest(
+					newSheetId,
+					&google_model.RangeOption{StartRow: 1, EndRow: 2, StartCol: 10, EndCol: 11},
+					true,
+					"CENTER",
+					"MIDDLE",
+					&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
+					&sheets.Color{Red: 1, Green: 1, Blue: 1},
+					"作成日",
+					&sheets.TextFormat{FontSize: 10, Bold: false},
+				)...,
+			)
+
+			requests = append(
+				requests,
+				google_internal.CreateSheetLayoutRequest(
+					newSheetId,
+					&google_model.RangeOption{StartRow: 1, EndRow: 2, StartCol: 11, EndCol: 12},
+					true,
+					"CENTER",
+					"MIDDLE",
+					&sheets.Color{Red: 1, Green: 1, Blue: 1},
+					nil,
+					"",
+					&sheets.TextFormat{FontSize: 10, Bold: false},
+				)...,
+			)
+
+			requests = append(
+				requests,
+				google_internal.CreateSheetLayoutRequest(
+					newSheetId,
+					&google_model.RangeOption{StartRow: 2, EndRow: 4, StartCol: 0, EndCol: 2},
+					true,
+					"CENTER",
+					"MIDDLE",
+					&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
+					&sheets.Color{Red: 1, Green: 1, Blue: 1},
+					"内容説明",
+					&sheets.TextFormat{FontSize: 10, Bold: false},
+				)...,
+			)
+
+			requests = append(
+				requests,
+				google_internal.CreateSheetLayoutRequest(
+					newSheetId,
+					&google_model.RangeOption{StartRow: 2, EndRow: 4, StartCol: 2, EndCol: 12},
+					true,
+					"CENTER",
+					"MIDDLE",
+					&sheets.Color{Red: 1, Green: 1, Blue: 1},
+					nil,
+					"",
+					&sheets.TextFormat{FontSize: 10, Bold: false},
+				)...,
+			)
+
+			requests = append(
+				requests,
+				google_internal.CreateSheetLayoutRequest(
+					newSheetId,
+					&google_model.RangeOption{StartRow: 6, EndRow: 7, StartCol: 0, EndCol: 1},
+					true,
+					"CENTER",
+					"MIDDLE",
+					&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
+					&sheets.Color{Red: 1, Green: 1, Blue: 1},
+					"No",
+					&sheets.TextFormat{FontSize: 10, Bold: false},
+				)...,
+			)
+
+			requests = append(
+				requests,
+				google_internal.CreateSheetLayoutRequest(
+					newSheetId,
+					&google_model.RangeOption{StartRow: 6, EndRow: 7, StartCol: 1, EndCol: 3},
+					true,
+					"CENTER",
+					"MIDDLE",
+					&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
+					&sheets.Color{Red: 1, Green: 1, Blue: 1},
+					"カラム名",
+					&sheets.TextFormat{FontSize: 10, Bold: false},
+				)...,
+			)
+
+			requests = append(
+				requests,
+				google_internal.CreateSheetLayoutRequest(
+					newSheetId,
+					&google_model.RangeOption{StartRow: 6, EndRow: 7, StartCol: 3, EndCol: 4},
+					true,
+					"CENTER",
+					"MIDDLE",
+					&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
+					&sheets.Color{Red: 1, Green: 1, Blue: 1},
+					"型",
+					&sheets.TextFormat{FontSize: 10, Bold: false},
+				)...,
+			)
+
+			requests = append(
+				requests,
+				google_internal.CreateSheetLayoutRequest(
+					newSheetId,
+					&google_model.RangeOption{StartRow: 6, EndRow: 7, StartCol: 4, EndCol: 5},
+					true,
+					"CENTER",
+					"MIDDLE",
+					&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
+					&sheets.Color{Red: 1, Green: 1, Blue: 1},
+					"主キー",
+					&sheets.TextFormat{FontSize: 10, Bold: false},
+				)...,
+			)
+
+			requests = append(
+				requests,
+				google_internal.CreateSheetLayoutRequest(
+					newSheetId,
+					&google_model.RangeOption{StartRow: 6, EndRow: 7, StartCol: 5, EndCol: 6},
+					true,
+					"CENTER",
+					"MIDDLE",
+					&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
+					&sheets.Color{Red: 1, Green: 1, Blue: 1},
+					"NULL",
+					&sheets.TextFormat{FontSize: 10, Bold: false},
+				)...,
+			)
+
+			requests = append(
+				requests,
+				google_internal.CreateSheetLayoutRequest(
+					newSheetId,
+					&google_model.RangeOption{StartRow: 6, EndRow: 7, StartCol: 6, EndCol: 7},
+					true,
+					"CENTER",
+					"MIDDLE",
+					&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
+					&sheets.Color{Red: 1, Green: 1, Blue: 1},
+					"unique",
+					&sheets.TextFormat{FontSize: 10, Bold: false},
+				)...,
+			)
+
+			requests = append(
+				requests,
+				google_internal.CreateSheetLayoutRequest(
+					newSheetId,
+					&google_model.RangeOption{StartRow: 6, EndRow: 7, StartCol: 7, EndCol: 8},
+					true,
+					"CENTER",
+					"MIDDLE",
+					&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
+					&sheets.Color{Red: 1, Green: 1, Blue: 1},
+					"index",
+					&sheets.TextFormat{FontSize: 10, Bold: false},
+				)...,
+			)
+
+			requests = append(
+				requests,
+				google_internal.CreateSheetLayoutRequest(
+					newSheetId,
+					&google_model.RangeOption{StartRow: 6, EndRow: 7, StartCol: 8, EndCol: 9},
+					true,
+					"CENTER",
+					"MIDDLE",
+					&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
+					&sheets.Color{Red: 1, Green: 1, Blue: 1},
+					"外部キー",
+					&sheets.TextFormat{FontSize: 10, Bold: false},
+				)...,
+			)
+
+			requests = append(
+				requests,
+				google_internal.CreateSheetLayoutRequest(
+					newSheetId,
+					&google_model.RangeOption{StartRow: 6, EndRow: 7, StartCol: 9, EndCol: 10},
+					true,
+					"CENTER",
+					"MIDDLE",
+					&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
+					&sheets.Color{Red: 1, Green: 1, Blue: 1},
+					"外部キーテーブル",
+					&sheets.TextFormat{FontSize: 10, Bold: false},
+				)...,
+			)
+
+			requests = append(
+				requests,
+				google_internal.CreateSheetLayoutRequest(
+					newSheetId,
+					&google_model.RangeOption{StartRow: 6, EndRow: 7, StartCol: 10, EndCol: 11},
+					true,
+					"CENTER",
+					"MIDDLE",
+					&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
+					&sheets.Color{Red: 1, Green: 1, Blue: 1},
+					"外部キーカラム",
+					&sheets.TextFormat{FontSize: 10, Bold: false},
+				)...,
+			)
+
+			for ri, record := range records {
+
+				if ri == 0 {
+					continue
 				}
 
-				vr.Values = append(vr.Values, interfaceRecord)
+				requests = append(
+					requests,
+					google_internal.CreateSheetLayoutRequest(
+						newSheetId,
+						&google_model.RangeOption{StartRow: int64(ri) + 6, EndRow: int64(ri) + 7, StartCol: 0, EndCol: 1},
+						true,
+						"CENTER",
+						"MIDDLE",
+						&sheets.Color{Red: 1, Green: 1, Blue: 1},
+						&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
+						strconv.Itoa(ri),
+						&sheets.TextFormat{FontSize: 10, Bold: false},
+					)...,
+				)
+
+				requests = append(
+					requests,
+					google_internal.CreateSheetLayoutRequest(
+						newSheetId,
+						&google_model.RangeOption{StartRow: int64(ri) + 6, EndRow: int64(ri) + 7, StartCol: 1, EndCol: 3},
+						true,
+						"CENTER",
+						"MIDDLE",
+						&sheets.Color{Red: 1, Green: 1, Blue: 1},
+						&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
+						record[0],
+						&sheets.TextFormat{FontSize: 10, Bold: false},
+					)...,
+				)
+
+				requests = append(
+					requests,
+					google_internal.CreateSheetLayoutRequest(
+						newSheetId,
+						&google_model.RangeOption{StartRow: int64(ri) + 6, EndRow: int64(ri) + 7, StartCol: 3, EndCol: 4},
+						true,
+						"CENTER",
+						"MIDDLE",
+						&sheets.Color{Red: 1, Green: 1, Blue: 1},
+						&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
+						record[1],
+						&sheets.TextFormat{FontSize: 10, Bold: false},
+					)...,
+				)
+
+				requests = append(
+					requests,
+					google_internal.CreateSheetLayoutRequest(
+						newSheetId,
+						&google_model.RangeOption{StartRow: int64(ri) + 6, EndRow: int64(ri) + 7, StartCol: 4, EndCol: 5},
+						true,
+						"CENTER",
+						"MIDDLE",
+						&sheets.Color{Red: 1, Green: 1, Blue: 1},
+						&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
+						record[2],
+						&sheets.TextFormat{FontSize: 10, Bold: false},
+					)...,
+				)
+
+				requests = append(
+					requests,
+					google_internal.CreateSheetLayoutRequest(
+						newSheetId,
+						&google_model.RangeOption{StartRow: int64(ri) + 6, EndRow: int64(ri) + 7, StartCol: 5, EndCol: 6},
+						true,
+						"CENTER",
+						"MIDDLE",
+						&sheets.Color{Red: 1, Green: 1, Blue: 1},
+						&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
+						record[3],
+						&sheets.TextFormat{FontSize: 10, Bold: false},
+					)...,
+				)
+
+				requests = append(
+					requests,
+					google_internal.CreateSheetLayoutRequest(
+						newSheetId,
+						&google_model.RangeOption{StartRow: int64(ri) + 6, EndRow: int64(ri) + 7, StartCol: 6, EndCol: 7},
+						true,
+						"CENTER",
+						"MIDDLE",
+						&sheets.Color{Red: 1, Green: 1, Blue: 1},
+						&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
+						record[4],
+						&sheets.TextFormat{FontSize: 10, Bold: false},
+					)...,
+				)
+
+				requests = append(
+					requests,
+					google_internal.CreateSheetLayoutRequest(
+						newSheetId,
+						&google_model.RangeOption{StartRow: int64(ri) + 6, EndRow: int64(ri) + 7, StartCol: 7, EndCol: 8},
+						true,
+						"CENTER",
+						"MIDDLE",
+						&sheets.Color{Red: 1, Green: 1, Blue: 1},
+						&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
+						record[5],
+						&sheets.TextFormat{FontSize: 10, Bold: false},
+					)...,
+				)
+
+				requests = append(
+					requests,
+					google_internal.CreateSheetLayoutRequest(
+						newSheetId,
+						&google_model.RangeOption{StartRow: int64(ri) + 6, EndRow: int64(ri) + 7, StartCol: 8, EndCol: 9},
+						true,
+						"CENTER",
+						"MIDDLE",
+						&sheets.Color{Red: 1, Green: 1, Blue: 1},
+						&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
+						record[6],
+						&sheets.TextFormat{FontSize: 10, Bold: false},
+					)...,
+				)
+
+				requests = append(
+					requests,
+					google_internal.CreateSheetLayoutRequest(
+						newSheetId,
+						&google_model.RangeOption{StartRow: int64(ri) + 6, EndRow: int64(ri) + 7, StartCol: 9, EndCol: 10},
+						true,
+						"CENTER",
+						"MIDDLE",
+						&sheets.Color{Red: 1, Green: 1, Blue: 1},
+						&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
+						record[7],
+						&sheets.TextFormat{FontSize: 10, Bold: false},
+					)...,
+				)
+
+				requests = append(
+					requests,
+					google_internal.CreateSheetLayoutRequest(
+						newSheetId,
+						&google_model.RangeOption{StartRow: int64(ri) + 6, EndRow: int64(ri) + 7, StartCol: 10, EndCol: 11},
+						true,
+						"CENTER",
+						"MIDDLE",
+						&sheets.Color{Red: 1, Green: 1, Blue: 1},
+						&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
+						record[8],
+						&sheets.TextFormat{FontSize: 10, Bold: false},
+					)...,
+				)
 			}
-			_, err = srv.Spreadsheets.Values.
-				Update(spreadsheetId, newSheet.Title+"!A1", &vr).
-				ValueInputOption("USER_ENTERED").
-				Do()
+
+			batchUpdateRequestForLayout := &sheets.BatchUpdateSpreadsheetRequest{
+				Requests: requests,
+			}
+
+			_, err = sheSrv.Spreadsheets.BatchUpdate(spreadsheetId, batchUpdateRequestForLayout).Do()
 			if err != nil {
-				log.Printf("Unable to write data to new sheet: %v", err)
+				log.Printf("Unable to create new sheet: %v", err)
 				continue
 			}
+
+			// 3秒間待機
+			time.Sleep(3 * time.Second)
 		}
 	}
 }
