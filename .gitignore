@@ -24,7 +24,7 @@ go.work
 
 .idea
 
-secrets
+secrets/*
 
 csv_directory/*
 
