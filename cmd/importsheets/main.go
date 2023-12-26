@@ -171,7 +171,7 @@ func main() {
 				requests,
 				google_internal.CreateSheetLayoutRequest(
 					newSheetId,
-					&google_model.RangeOption{StartRow: 0, EndRow: 1, StartCol: 5, EndCol: 8},
+					&google_model.RangeOption{StartRow: 0, EndRow: 1, StartCol: 5, EndCol: 10},
 					true,
 					"CENTER",
 					"MIDDLE",
@@ -186,7 +186,7 @@ func main() {
 				requests,
 				google_internal.CreateSheetLayoutRequest(
 					newSheetId,
-					&google_model.RangeOption{StartRow: 1, EndRow: 2, StartCol: 5, EndCol: 8},
+					&google_model.RangeOption{StartRow: 1, EndRow: 2, StartCol: 5, EndCol: 10},
 					true,
 					"CENTER",
 					"MIDDLE",
@@ -201,43 +201,13 @@ func main() {
 				requests,
 				google_internal.CreateSheetLayoutRequest(
 					newSheetId,
-					&google_model.RangeOption{StartRow: 0, EndRow: 1, StartCol: 8, EndCol: 9},
-					true,
-					"CENTER",
-					"MIDDLE",
-					&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
-					&sheets.Color{Red: 1, Green: 1, Blue: 1},
-					"作成者",
-					&sheets.TextFormat{FontSize: 10, Bold: false},
-				)...,
-			)
-
-			requests = append(
-				requests,
-				google_internal.CreateSheetLayoutRequest(
-					newSheetId,
-					&google_model.RangeOption{StartRow: 0, EndRow: 1, StartCol: 9, EndCol: 10},
-					true,
-					"CENTER",
-					"MIDDLE",
-					&sheets.Color{Red: 1, Green: 1, Blue: 1},
-					nil,
-					"",
-					&sheets.TextFormat{FontSize: 10, Bold: false},
-				)...,
-			)
-
-			requests = append(
-				requests,
-				google_internal.CreateSheetLayoutRequest(
-					newSheetId,
 					&google_model.RangeOption{StartRow: 0, EndRow: 1, StartCol: 10, EndCol: 11},
 					true,
 					"CENTER",
 					"MIDDLE",
 					&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
 					&sheets.Color{Red: 1, Green: 1, Blue: 1},
-					"修正者",
+					"作成者",
 					&sheets.TextFormat{FontSize: 10, Bold: false},
 				)...,
 			)
@@ -261,13 +231,13 @@ func main() {
 				requests,
 				google_internal.CreateSheetLayoutRequest(
 					newSheetId,
-					&google_model.RangeOption{StartRow: 1, EndRow: 2, StartCol: 8, EndCol: 9},
+					&google_model.RangeOption{StartRow: 0, EndRow: 1, StartCol: 12, EndCol: 13},
 					true,
 					"CENTER",
 					"MIDDLE",
 					&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
 					&sheets.Color{Red: 1, Green: 1, Blue: 1},
-					"作成日",
+					"修正者",
 					&sheets.TextFormat{FontSize: 10, Bold: false},
 				)...,
 			)
@@ -276,7 +246,7 @@ func main() {
 				requests,
 				google_internal.CreateSheetLayoutRequest(
 					newSheetId,
-					&google_model.RangeOption{StartRow: 1, EndRow: 2, StartCol: 9, EndCol: 10},
+					&google_model.RangeOption{StartRow: 0, EndRow: 1, StartCol: 13, EndCol: 14},
 					true,
 					"CENTER",
 					"MIDDLE",
@@ -321,6 +291,36 @@ func main() {
 				requests,
 				google_internal.CreateSheetLayoutRequest(
 					newSheetId,
+					&google_model.RangeOption{StartRow: 1, EndRow: 2, StartCol: 12, EndCol: 13},
+					true,
+					"CENTER",
+					"MIDDLE",
+					&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
+					&sheets.Color{Red: 1, Green: 1, Blue: 1},
+					"修正日",
+					&sheets.TextFormat{FontSize: 10, Bold: false},
+				)...,
+			)
+
+			requests = append(
+				requests,
+				google_internal.CreateSheetLayoutRequest(
+					newSheetId,
+					&google_model.RangeOption{StartRow: 1, EndRow: 2, StartCol: 13, EndCol: 14},
+					true,
+					"CENTER",
+					"MIDDLE",
+					&sheets.Color{Red: 1, Green: 1, Blue: 1},
+					nil,
+					"",
+					&sheets.TextFormat{FontSize: 10, Bold: false},
+				)...,
+			)
+
+			requests = append(
+				requests,
+				google_internal.CreateSheetLayoutRequest(
+					newSheetId,
 					&google_model.RangeOption{StartRow: 2, EndRow: 4, StartCol: 0, EndCol: 2},
 					true,
 					"CENTER",
@@ -336,7 +336,7 @@ func main() {
 				requests,
 				google_internal.CreateSheetLayoutRequest(
 					newSheetId,
-					&google_model.RangeOption{StartRow: 2, EndRow: 4, StartCol: 2, EndCol: 12},
+					&google_model.RangeOption{StartRow: 2, EndRow: 4, StartCol: 2, EndCol: 14},
 					true,
 					"CENTER",
 					"MIDDLE",
@@ -366,7 +366,7 @@ func main() {
 				requests,
 				google_internal.CreateSheetLayoutRequest(
 					newSheetId,
-					&google_model.RangeOption{StartRow: 6, EndRow: 7, StartCol: 1, EndCol: 3},
+					&google_model.RangeOption{StartRow: 6, EndRow: 7, StartCol: 1, EndCol: 4},
 					true,
 					"CENTER",
 					"MIDDLE",
@@ -381,7 +381,7 @@ func main() {
 				requests,
 				google_internal.CreateSheetLayoutRequest(
 					newSheetId,
-					&google_model.RangeOption{StartRow: 6, EndRow: 7, StartCol: 3, EndCol: 4},
+					&google_model.RangeOption{StartRow: 6, EndRow: 7, StartCol: 4, EndCol: 5},
 					true,
 					"CENTER",
 					"MIDDLE",
@@ -396,7 +396,7 @@ func main() {
 				requests,
 				google_internal.CreateSheetLayoutRequest(
 					newSheetId,
-					&google_model.RangeOption{StartRow: 6, EndRow: 7, StartCol: 4, EndCol: 5},
+					&google_model.RangeOption{StartRow: 6, EndRow: 7, StartCol: 5, EndCol: 6},
 					true,
 					"CENTER",
 					"MIDDLE",
@@ -411,7 +411,7 @@ func main() {
 				requests,
 				google_internal.CreateSheetLayoutRequest(
 					newSheetId,
-					&google_model.RangeOption{StartRow: 6, EndRow: 7, StartCol: 5, EndCol: 6},
+					&google_model.RangeOption{StartRow: 6, EndRow: 7, StartCol: 6, EndCol: 7},
 					true,
 					"CENTER",
 					"MIDDLE",
@@ -426,7 +426,7 @@ func main() {
 				requests,
 				google_internal.CreateSheetLayoutRequest(
 					newSheetId,
-					&google_model.RangeOption{StartRow: 6, EndRow: 7, StartCol: 6, EndCol: 7},
+					&google_model.RangeOption{StartRow: 6, EndRow: 7, StartCol: 7, EndCol: 8},
 					true,
 					"CENTER",
 					"MIDDLE",
@@ -441,7 +441,7 @@ func main() {
 				requests,
 				google_internal.CreateSheetLayoutRequest(
 					newSheetId,
-					&google_model.RangeOption{StartRow: 6, EndRow: 7, StartCol: 7, EndCol: 8},
+					&google_model.RangeOption{StartRow: 6, EndRow: 7, StartCol: 8, EndCol: 9},
 					true,
 					"CENTER",
 					"MIDDLE",
@@ -456,7 +456,7 @@ func main() {
 				requests,
 				google_internal.CreateSheetLayoutRequest(
 					newSheetId,
-					&google_model.RangeOption{StartRow: 6, EndRow: 7, StartCol: 8, EndCol: 9},
+					&google_model.RangeOption{StartRow: 6, EndRow: 7, StartCol: 9, EndCol: 10},
 					true,
 					"CENTER",
 					"MIDDLE",
@@ -471,7 +471,7 @@ func main() {
 				requests,
 				google_internal.CreateSheetLayoutRequest(
 					newSheetId,
-					&google_model.RangeOption{StartRow: 6, EndRow: 7, StartCol: 9, EndCol: 10},
+					&google_model.RangeOption{StartRow: 6, EndRow: 7, StartCol: 10, EndCol: 11},
 					true,
 					"CENTER",
 					"MIDDLE",
@@ -486,13 +486,28 @@ func main() {
 				requests,
 				google_internal.CreateSheetLayoutRequest(
 					newSheetId,
-					&google_model.RangeOption{StartRow: 6, EndRow: 7, StartCol: 10, EndCol: 11},
+					&google_model.RangeOption{StartRow: 6, EndRow: 7, StartCol: 11, EndCol: 12},
 					true,
 					"CENTER",
 					"MIDDLE",
 					&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
 					&sheets.Color{Red: 1, Green: 1, Blue: 1},
 					"外部キーカラム",
+					&sheets.TextFormat{FontSize: 10, Bold: false},
+				)...,
+			)
+
+			requests = append(
+				requests,
+				google_internal.CreateSheetLayoutRequest(
+					newSheetId,
+					&google_model.RangeOption{StartRow: 6, EndRow: 7, StartCol: 12, EndCol: 14},
+					true,
+					"CENTER",
+					"MIDDLE",
+					&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
+					&sheets.Color{Red: 1, Green: 1, Blue: 1},
+					"コメント",
 					&sheets.TextFormat{FontSize: 10, Bold: false},
 				)...,
 			)
@@ -522,7 +537,7 @@ func main() {
 					requests,
 					google_internal.CreateSheetLayoutRequest(
 						newSheetId,
-						&google_model.RangeOption{StartRow: int64(ri) + 6, EndRow: int64(ri) + 7, StartCol: 1, EndCol: 3},
+						&google_model.RangeOption{StartRow: int64(ri) + 6, EndRow: int64(ri) + 7, StartCol: 1, EndCol: 4},
 						true,
 						"CENTER",
 						"MIDDLE",
@@ -537,7 +552,7 @@ func main() {
 					requests,
 					google_internal.CreateSheetLayoutRequest(
 						newSheetId,
-						&google_model.RangeOption{StartRow: int64(ri) + 6, EndRow: int64(ri) + 7, StartCol: 3, EndCol: 4},
+						&google_model.RangeOption{StartRow: int64(ri) + 6, EndRow: int64(ri) + 7, StartCol: 4, EndCol: 5},
 						true,
 						"CENTER",
 						"MIDDLE",
@@ -552,7 +567,7 @@ func main() {
 					requests,
 					google_internal.CreateSheetLayoutRequest(
 						newSheetId,
-						&google_model.RangeOption{StartRow: int64(ri) + 6, EndRow: int64(ri) + 7, StartCol: 4, EndCol: 5},
+						&google_model.RangeOption{StartRow: int64(ri) + 6, EndRow: int64(ri) + 7, StartCol: 5, EndCol: 6},
 						true,
 						"CENTER",
 						"MIDDLE",
@@ -567,7 +582,7 @@ func main() {
 					requests,
 					google_internal.CreateSheetLayoutRequest(
 						newSheetId,
-						&google_model.RangeOption{StartRow: int64(ri) + 6, EndRow: int64(ri) + 7, StartCol: 5, EndCol: 6},
+						&google_model.RangeOption{StartRow: int64(ri) + 6, EndRow: int64(ri) + 7, StartCol: 6, EndCol: 7},
 						true,
 						"CENTER",
 						"MIDDLE",
@@ -582,7 +597,7 @@ func main() {
 					requests,
 					google_internal.CreateSheetLayoutRequest(
 						newSheetId,
-						&google_model.RangeOption{StartRow: int64(ri) + 6, EndRow: int64(ri) + 7, StartCol: 6, EndCol: 7},
+						&google_model.RangeOption{StartRow: int64(ri) + 6, EndRow: int64(ri) + 7, StartCol: 7, EndCol: 8},
 						true,
 						"CENTER",
 						"MIDDLE",
@@ -597,7 +612,7 @@ func main() {
 					requests,
 					google_internal.CreateSheetLayoutRequest(
 						newSheetId,
-						&google_model.RangeOption{StartRow: int64(ri) + 6, EndRow: int64(ri) + 7, StartCol: 7, EndCol: 8},
+						&google_model.RangeOption{StartRow: int64(ri) + 6, EndRow: int64(ri) + 7, StartCol: 8, EndCol: 9},
 						true,
 						"CENTER",
 						"MIDDLE",
@@ -612,7 +627,7 @@ func main() {
 					requests,
 					google_internal.CreateSheetLayoutRequest(
 						newSheetId,
-						&google_model.RangeOption{StartRow: int64(ri) + 6, EndRow: int64(ri) + 7, StartCol: 8, EndCol: 9},
+						&google_model.RangeOption{StartRow: int64(ri) + 6, EndRow: int64(ri) + 7, StartCol: 9, EndCol: 10},
 						true,
 						"CENTER",
 						"MIDDLE",
@@ -627,7 +642,7 @@ func main() {
 					requests,
 					google_internal.CreateSheetLayoutRequest(
 						newSheetId,
-						&google_model.RangeOption{StartRow: int64(ri) + 6, EndRow: int64(ri) + 7, StartCol: 9, EndCol: 10},
+						&google_model.RangeOption{StartRow: int64(ri) + 6, EndRow: int64(ri) + 7, StartCol: 10, EndCol: 11},
 						true,
 						"CENTER",
 						"MIDDLE",
@@ -642,13 +657,28 @@ func main() {
 					requests,
 					google_internal.CreateSheetLayoutRequest(
 						newSheetId,
-						&google_model.RangeOption{StartRow: int64(ri) + 6, EndRow: int64(ri) + 7, StartCol: 10, EndCol: 11},
+						&google_model.RangeOption{StartRow: int64(ri) + 6, EndRow: int64(ri) + 7, StartCol: 11, EndCol: 12},
 						true,
 						"CENTER",
 						"MIDDLE",
 						&sheets.Color{Red: 1, Green: 1, Blue: 1},
 						&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
 						record[8],
+						&sheets.TextFormat{FontSize: 10, Bold: false},
+					)...,
+				)
+
+				requests = append(
+					requests,
+					google_internal.CreateSheetLayoutRequest(
+						newSheetId,
+						&google_model.RangeOption{StartRow: int64(ri) + 6, EndRow: int64(ri) + 7, StartCol: 12, EndCol: 14},
+						true,
+						"CENTER",
+						"MIDDLE",
+						&sheets.Color{Red: 1, Green: 1, Blue: 1},
+						&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
+						record[9],
 						&sheets.TextFormat{FontSize: 10, Bold: false},
 					)...,
 				)
