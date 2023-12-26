@@ -497,6 +497,21 @@ func main() {
 				)...,
 			)
 
+			requests = append(
+				requests,
+				google_internal.CreateSheetLayoutRequest(
+					newSheetId,
+					&google_model.RangeOption{StartRow: 6, EndRow: 7, StartCol: 11, EndCol: 13},
+					true,
+					"CENTER",
+					"MIDDLE",
+					&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
+					&sheets.Color{Red: 1, Green: 1, Blue: 1},
+					"コメント",
+					&sheets.TextFormat{FontSize: 10, Bold: false},
+				)...,
+			)
+
 			for ri, record := range records {
 
 				if ri == 0 {
@@ -649,6 +664,21 @@ func main() {
 						&sheets.Color{Red: 1, Green: 1, Blue: 1},
 						&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
 						record[8],
+						&sheets.TextFormat{FontSize: 10, Bold: false},
+					)...,
+				)
+
+				requests = append(
+					requests,
+					google_internal.CreateSheetLayoutRequest(
+						newSheetId,
+						&google_model.RangeOption{StartRow: int64(ri) + 6, EndRow: int64(ri) + 7, StartCol: 11, EndCol: 13},
+						true,
+						"CENTER",
+						"MIDDLE",
+						&sheets.Color{Red: 1, Green: 1, Blue: 1},
+						&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
+						record[9],
 						&sheets.TextFormat{FontSize: 10, Bold: false},
 					)...,
 				)
