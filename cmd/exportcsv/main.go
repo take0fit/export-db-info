@@ -26,11 +26,12 @@ func main() {
 	}
 
 	// DBネームを仕様したい場合はコメントアウト（スプシにインポートする際に環境変数変更する必要あり）
-	// newDbDirPath := filepath.Join(baseCsvDir, dbInfo.Name)
+	//newDbDirPath := filepath.Join(baseCsvDir, dbInfo.Name)
 
 	// 出力ディレクトリの作成
-	if err := os.MkdirAll(baseCsvDir, 0755); err != nil {
-		log.Fatalf("Could not create directory: %v", err)
+	_, err = createUniqueDir(baseCsvDir)
+	if err != nil {
+		log.Fatalf("Could not create unique directory: %v", err)
 	}
 
 	for _, table := range dbInfo.Tables {
@@ -57,6 +58,7 @@ func main() {
 			"IS_FOREiGN_KEY",
 			"FOREiGN_KEY_TABLE",
 			"FOREiGN_KEY_COLUMN",
+			"COMMENT",
 		}
 		if err := writer.Write(headers); err != nil {
 			log.Fatalf("Could not write headers to CSV for table %s: %v", table.Name, err)
@@ -95,6 +97,7 @@ func main() {
 				isForeign,
 				col.ForeignKeyTable,
 				col.ForeignKeyColumn,
+				col.Comment,
 			}
 
 			if err := writer.Write(record); err != nil {
@@ -106,5 +109,22 @@ func main() {
 
 		// CSVファイルをクローズ
 		csvFile.Close()
+	}
+}
+
+// createUniqueDir は指定されたベースディレクトリに対してユニークなディレクトリを作成します。
+func createUniqueDir(baseDir string) (string, error) {
+	dir := baseDir
+	for i := 1; ; i++ {
+		if _, err := os.Stat(dir); os.IsNotExist(err) {
+			// ディレクトリが存在しない場合、ディレクトリを作成
+			err := os.MkdirAll(dir, 0755)
+			if err != nil {
+				return "", err
+			}
+			return dir, nil
+		}
+		// ディレクトリが存在する場合、新しい名前を生成
+		dir = fmt.Sprintf("%s_%d", baseDir, i)
 	}
 }
