@@ -44,12 +44,18 @@ func main() {
 		},
 	}
 
+	// スプレッドシートの作成
 	createdSpreadsheet, err := sheSrv.Spreadsheets.Create(spreadsheet).Do()
 	if err != nil {
 		log.Fatalf("Unable to create spreadsheet. %v", err)
 	}
-
 	spreadsheetId := createdSpreadsheet.SpreadsheetId
+
+	// インデックスページ（通常は最初のシート）のIDを取得
+	var indexSheetId int64
+	if len(createdSpreadsheet.Sheets) > 0 {
+		indexSheetId = createdSpreadsheet.Sheets[0].Properties.SheetId
+	}
 
 	// 共有設定のリクエスト
 	permission := &drive.Permission{
@@ -67,6 +73,9 @@ func main() {
 	}
 
 	log.Println("Spreadsheet shared successfully.")
+
+	// シート名とIDのマッピングを格納する変数
+	sheetMappings := make(map[string]int64)
 
 	for _, file := range files {
 		if filepath.Ext(file.Name()) == ".csv" {
@@ -109,6 +118,7 @@ func main() {
 			var newSheetId int64
 			if len(resp.Replies) > 0 && resp.Replies[0].AddSheet != nil {
 				newSheetId = resp.Replies[0].AddSheet.Properties.SheetId
+				sheetMappings[tableName] = newSheetId
 			} else {
 				log.Fatal("Failed to get the new sheet ID")
 			}
@@ -117,16 +127,11 @@ func main() {
 
 			var requests []*sheets.Request
 
-			// セルの範囲オプションを設定
-			rangeOption := &google_model.RangeOption{
-				StartRow: 0, EndRow: 2, StartCol: 0, EndCol: 3,
-			}
-
 			requests = append(
 				requests,
 				google_internal.CreateSheetLayoutRequest(
 					newSheetId,
-					rangeOption,
+					&google_model.RangeOption{StartRow: 0, EndRow: 2, StartCol: 0, EndCol: 3}, // セルの範囲オプションを設定
 					true,     // セルの結合
 					"CENTER", // 水平方向の配置
 					"MIDDLE", // 垂直方向の配置
@@ -698,4 +703,85 @@ func main() {
 			time.Sleep(3 * time.Second)
 		}
 	}
+
+	// インデックスページにシート名とリンクを追加するリクエストを作成
+	var indexRequests []*sheets.Request
+	rowIndex := 0
+	for sheetName, sheetId := range sheetMappings {
+		indexRequests = append(indexRequests, createIndexEntryRequest(sheetName, sheetId, rowIndex, indexSheetId)...)
+		rowIndex++
+	}
+
+	// インデックスページの更新を実行
+	_, err = sheSrv.Spreadsheets.BatchUpdate(spreadsheetId, &sheets.BatchUpdateSpreadsheetRequest{
+		Requests: indexRequests,
+	}).Do()
+	if err != nil {
+		log.Fatalf("Unable to update index page: %v", err)
+	}
+}
+
+// createIndexPageRequest は、インデックスページを初期化するためのリクエストを作成します
+func createIndexPageRequest() *sheets.Request {
+	return &sheets.Request{
+		AddSheet: &sheets.AddSheetRequest{
+			Properties: &sheets.SheetProperties{
+				Title: "インデックス",
+			},
+		},
+	}
+}
+
+// createIndexEntryRequest は、インデックスページにシート名とリンクを追加するためのリクエストを作成します
+func createIndexEntryRequest(sheetName string, sheetId int64, rowIndex int, indexSheetId int64) []*sheets.Request {
+	// シート名をインデックスページに追加
+	//appendSheetNameRequest := &sheets.Request{
+	//	UpdateCells: &sheets.UpdateCellsRequest{
+	//		Start: &sheets.GridCoordinate{
+	//			SheetId:     indexSheetId, // インデックスページのID
+	//			RowIndex:    int64(rowIndex),
+	//			ColumnIndex: 0, // シート名の列
+	//		},
+	//		Rows: []*sheets.RowData{
+	//			{
+	//				Values: []*sheets.CellData{
+	//					{
+	//						UserEnteredValue: &sheets.ExtendedValue{
+	//							StringValue: &sheetName,
+	//						},
+	//					},
+	//				},
+	//			},
+	//		},
+	//		Fields: "userEnteredValue",
+	//	},
+	//}
+
+	formulaValue := fmt.Sprintf("=HYPERLINK(\"#gid=%d\",\"%s\")", sheetId, sheetName)
+
+	// シートへのリンクを追加（ハイパーリンクの形式で）
+	appendLinkRequest := &sheets.Request{
+		UpdateCells: &sheets.UpdateCellsRequest{
+			Start: &sheets.GridCoordinate{
+				SheetId:     indexSheetId, // インデックスページのID
+				RowIndex:    int64(rowIndex),
+				ColumnIndex: 1, // リンクの列
+			},
+			Rows: []*sheets.RowData{
+				{
+					Values: []*sheets.CellData{
+						{
+							UserEnteredValue: &sheets.ExtendedValue{
+								FormulaValue: &formulaValue,
+							},
+						},
+					},
+				},
+			},
+			Fields: "userEnteredValue",
+		},
+	}
+
+	// 両方のリクエストを組み合わせて返す
+	return []*sheets.Request{appendLinkRequest}
 }
