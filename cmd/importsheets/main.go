@@ -42,6 +42,11 @@ func main() {
 		Properties: &sheets.SpreadsheetProperties{
 			Title: lastPass,
 		},
+		Sheets: []*sheets.Sheet{{
+			Properties: &sheets.SheetProperties{
+				Title: "Index", // インデックスページのタイトル設定
+			},
+		}},
 	}
 
 	// スプレッドシートの作成
@@ -55,6 +60,29 @@ func main() {
 	var indexSheetId int64
 	if len(createdSpreadsheet.Sheets) > 0 {
 		indexSheetId = createdSpreadsheet.Sheets[0].Properties.SheetId
+	}
+
+	// インデックスページに「テーブル名」というテキストを挿入
+	var indexRequests []*sheets.Request
+	indexRequests = append(indexRequests, google_internal.CreateSheetLayoutRequest(
+		indexSheetId,
+		&google_model.RangeOption{StartRow: 0, EndRow: 2, StartCol: 0, EndCol: 5},
+		true,
+		"CENTER",
+		"MIDDLE",
+		&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
+		&sheets.Color{Red: 1, Green: 1, Blue: 1},
+		"シート目次（テーブル名）",
+		"",
+		&sheets.TextFormat{FontSize: 10, Bold: true},
+	)...)
+
+	// バッチリクエストの実行
+	_, err = sheSrv.Spreadsheets.BatchUpdate(spreadsheetId, &sheets.BatchUpdateSpreadsheetRequest{
+		Requests: indexRequests,
+	}).Do()
+	if err != nil {
+		log.Fatalf("Failed to update index page: %v", err)
 	}
 
 	// 共有設定のリクエスト
@@ -138,7 +166,8 @@ func main() {
 					&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25}, // 背景色
 					&sheets.Color{Red: 1, Green: 1, Blue: 1},          // テキスト色
 					"テーブル仕様書",                                         // セルに挿入するテキスト
-					&sheets.TextFormat{FontSize: 10, Bold: true},      // テキストフォーマット
+					"",
+					&sheets.TextFormat{FontSize: 10, Bold: true}, // テキストフォーマット
 				)...,
 			)
 
@@ -153,6 +182,7 @@ func main() {
 					&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
 					&sheets.Color{Red: 1, Green: 1, Blue: 1},
 					"テーブル論理名",
+					"",
 					&sheets.TextFormat{FontSize: 10, Bold: false},
 				)...,
 			)
@@ -168,6 +198,7 @@ func main() {
 					&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
 					&sheets.Color{Red: 1, Green: 1, Blue: 1},
 					"テーブル物理名",
+					"",
 					&sheets.TextFormat{FontSize: 10, Bold: false},
 				)...,
 			)
@@ -182,6 +213,7 @@ func main() {
 					"MIDDLE",
 					&sheets.Color{Red: 1, Green: 1, Blue: 1},
 					nil,
+					"",
 					"",
 					&sheets.TextFormat{FontSize: 10, Bold: false},
 				)...,
@@ -198,6 +230,7 @@ func main() {
 					&sheets.Color{Red: 1, Green: 1, Blue: 1},
 					nil,
 					tableName,
+					"",
 					&sheets.TextFormat{FontSize: 10, Bold: false},
 				)...,
 			)
@@ -213,6 +246,7 @@ func main() {
 					&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
 					&sheets.Color{Red: 1, Green: 1, Blue: 1},
 					"作成者",
+					"",
 					&sheets.TextFormat{FontSize: 10, Bold: false},
 				)...,
 			)
@@ -227,6 +261,7 @@ func main() {
 					"MIDDLE",
 					&sheets.Color{Red: 1, Green: 1, Blue: 1},
 					nil,
+					"",
 					"",
 					&sheets.TextFormat{FontSize: 10, Bold: false},
 				)...,
@@ -243,6 +278,7 @@ func main() {
 					&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
 					&sheets.Color{Red: 1, Green: 1, Blue: 1},
 					"修正者",
+					"",
 					&sheets.TextFormat{FontSize: 10, Bold: false},
 				)...,
 			)
@@ -257,6 +293,7 @@ func main() {
 					"MIDDLE",
 					&sheets.Color{Red: 1, Green: 1, Blue: 1},
 					nil,
+					"",
 					"",
 					&sheets.TextFormat{FontSize: 10, Bold: false},
 				)...,
@@ -273,6 +310,7 @@ func main() {
 					&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
 					&sheets.Color{Red: 1, Green: 1, Blue: 1},
 					"作成日",
+					"",
 					&sheets.TextFormat{FontSize: 10, Bold: false},
 				)...,
 			)
@@ -287,6 +325,7 @@ func main() {
 					"MIDDLE",
 					&sheets.Color{Red: 1, Green: 1, Blue: 1},
 					nil,
+					"",
 					"",
 					&sheets.TextFormat{FontSize: 10, Bold: false},
 				)...,
@@ -303,6 +342,7 @@ func main() {
 					&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
 					&sheets.Color{Red: 1, Green: 1, Blue: 1},
 					"修正日",
+					"",
 					&sheets.TextFormat{FontSize: 10, Bold: false},
 				)...,
 			)
@@ -317,6 +357,7 @@ func main() {
 					"MIDDLE",
 					&sheets.Color{Red: 1, Green: 1, Blue: 1},
 					nil,
+					"",
 					"",
 					&sheets.TextFormat{FontSize: 10, Bold: false},
 				)...,
@@ -333,6 +374,7 @@ func main() {
 					&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
 					&sheets.Color{Red: 1, Green: 1, Blue: 1},
 					"内容説明",
+					"",
 					&sheets.TextFormat{FontSize: 10, Bold: false},
 				)...,
 			)
@@ -347,6 +389,7 @@ func main() {
 					"MIDDLE",
 					&sheets.Color{Red: 1, Green: 1, Blue: 1},
 					nil,
+					"",
 					"",
 					&sheets.TextFormat{FontSize: 10, Bold: false},
 				)...,
@@ -363,6 +406,7 @@ func main() {
 					&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
 					&sheets.Color{Red: 1, Green: 1, Blue: 1},
 					"No",
+					"",
 					&sheets.TextFormat{FontSize: 10, Bold: false},
 				)...,
 			)
@@ -378,6 +422,7 @@ func main() {
 					&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
 					&sheets.Color{Red: 1, Green: 1, Blue: 1},
 					"カラム名",
+					"",
 					&sheets.TextFormat{FontSize: 10, Bold: false},
 				)...,
 			)
@@ -393,6 +438,7 @@ func main() {
 					&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
 					&sheets.Color{Red: 1, Green: 1, Blue: 1},
 					"型",
+					"",
 					&sheets.TextFormat{FontSize: 10, Bold: false},
 				)...,
 			)
@@ -408,6 +454,7 @@ func main() {
 					&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
 					&sheets.Color{Red: 1, Green: 1, Blue: 1},
 					"主キー",
+					"",
 					&sheets.TextFormat{FontSize: 10, Bold: false},
 				)...,
 			)
@@ -423,6 +470,7 @@ func main() {
 					&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
 					&sheets.Color{Red: 1, Green: 1, Blue: 1},
 					"NULL",
+					"",
 					&sheets.TextFormat{FontSize: 10, Bold: false},
 				)...,
 			)
@@ -438,6 +486,7 @@ func main() {
 					&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
 					&sheets.Color{Red: 1, Green: 1, Blue: 1},
 					"unique",
+					"",
 					&sheets.TextFormat{FontSize: 10, Bold: false},
 				)...,
 			)
@@ -453,6 +502,7 @@ func main() {
 					&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
 					&sheets.Color{Red: 1, Green: 1, Blue: 1},
 					"index",
+					"",
 					&sheets.TextFormat{FontSize: 10, Bold: false},
 				)...,
 			)
@@ -468,6 +518,7 @@ func main() {
 					&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
 					&sheets.Color{Red: 1, Green: 1, Blue: 1},
 					"外部キー",
+					"",
 					&sheets.TextFormat{FontSize: 10, Bold: false},
 				)...,
 			)
@@ -483,6 +534,7 @@ func main() {
 					&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
 					&sheets.Color{Red: 1, Green: 1, Blue: 1},
 					"外部キーテーブル",
+					"",
 					&sheets.TextFormat{FontSize: 10, Bold: false},
 				)...,
 			)
@@ -498,6 +550,7 @@ func main() {
 					&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
 					&sheets.Color{Red: 1, Green: 1, Blue: 1},
 					"外部キーカラム",
+					"",
 					&sheets.TextFormat{FontSize: 10, Bold: false},
 				)...,
 			)
@@ -513,6 +566,7 @@ func main() {
 					&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
 					&sheets.Color{Red: 1, Green: 1, Blue: 1},
 					"コメント",
+					"",
 					&sheets.TextFormat{FontSize: 10, Bold: false},
 				)...,
 			)
@@ -534,6 +588,7 @@ func main() {
 						&sheets.Color{Red: 1, Green: 1, Blue: 1},
 						&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
 						strconv.Itoa(ri),
+						"",
 						&sheets.TextFormat{FontSize: 10, Bold: false},
 					)...,
 				)
@@ -549,6 +604,7 @@ func main() {
 						&sheets.Color{Red: 1, Green: 1, Blue: 1},
 						&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
 						record[0],
+						"",
 						&sheets.TextFormat{FontSize: 10, Bold: false},
 					)...,
 				)
@@ -564,6 +620,7 @@ func main() {
 						&sheets.Color{Red: 1, Green: 1, Blue: 1},
 						&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
 						record[1],
+						"",
 						&sheets.TextFormat{FontSize: 10, Bold: false},
 					)...,
 				)
@@ -579,6 +636,7 @@ func main() {
 						&sheets.Color{Red: 1, Green: 1, Blue: 1},
 						&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
 						record[2],
+						"",
 						&sheets.TextFormat{FontSize: 10, Bold: false},
 					)...,
 				)
@@ -594,6 +652,7 @@ func main() {
 						&sheets.Color{Red: 1, Green: 1, Blue: 1},
 						&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
 						record[3],
+						"",
 						&sheets.TextFormat{FontSize: 10, Bold: false},
 					)...,
 				)
@@ -609,6 +668,7 @@ func main() {
 						&sheets.Color{Red: 1, Green: 1, Blue: 1},
 						&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
 						record[4],
+						"",
 						&sheets.TextFormat{FontSize: 10, Bold: false},
 					)...,
 				)
@@ -624,6 +684,7 @@ func main() {
 						&sheets.Color{Red: 1, Green: 1, Blue: 1},
 						&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
 						record[5],
+						"",
 						&sheets.TextFormat{FontSize: 10, Bold: false},
 					)...,
 				)
@@ -639,6 +700,7 @@ func main() {
 						&sheets.Color{Red: 1, Green: 1, Blue: 1},
 						&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
 						record[6],
+						"",
 						&sheets.TextFormat{FontSize: 10, Bold: false},
 					)...,
 				)
@@ -654,6 +716,7 @@ func main() {
 						&sheets.Color{Red: 1, Green: 1, Blue: 1},
 						&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
 						record[7],
+						"",
 						&sheets.TextFormat{FontSize: 10, Bold: false},
 					)...,
 				)
@@ -669,6 +732,7 @@ func main() {
 						&sheets.Color{Red: 1, Green: 1, Blue: 1},
 						&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
 						record[8],
+						"",
 						&sheets.TextFormat{FontSize: 10, Bold: false},
 					)...,
 				)
@@ -684,6 +748,7 @@ func main() {
 						&sheets.Color{Red: 1, Green: 1, Blue: 1},
 						&sheets.Color{Red: 0.25, Green: 0.25, Blue: 0.25},
 						record[9],
+						"",
 						&sheets.TextFormat{FontSize: 10, Bold: false},
 					)...,
 				)
@@ -699,89 +764,45 @@ func main() {
 				continue
 			}
 
-			// 3秒間待機
+			// 3秒間待機(google api のリウエスト制限にかからないように)
 			time.Sleep(3 * time.Second)
 		}
 	}
 
 	// インデックスページにシート名とリンクを追加するリクエストを作成
-	var indexRequests []*sheets.Request
+	var updateIndexRequests []*sheets.Request
 	rowIndex := 0
 	for sheetName, sheetId := range sheetMappings {
-		indexRequests = append(indexRequests, createIndexEntryRequest(sheetName, sheetId, rowIndex, indexSheetId)...)
+		updateIndexRequests = append(updateIndexRequests, createIndexEntryRequest(sheetName, sheetId, rowIndex, indexSheetId)...)
 		rowIndex++
 	}
 
 	// インデックスページの更新を実行
 	_, err = sheSrv.Spreadsheets.BatchUpdate(spreadsheetId, &sheets.BatchUpdateSpreadsheetRequest{
-		Requests: indexRequests,
+		Requests: updateIndexRequests,
 	}).Do()
 	if err != nil {
 		log.Fatalf("Unable to update index page: %v", err)
 	}
 }
 
-// createIndexPageRequest は、インデックスページを初期化するためのリクエストを作成します
-func createIndexPageRequest() *sheets.Request {
-	return &sheets.Request{
-		AddSheet: &sheets.AddSheetRequest{
-			Properties: &sheets.SheetProperties{
-				Title: "インデックス",
-			},
-		},
-	}
-}
-
 // createIndexEntryRequest は、インデックスページにシート名とリンクを追加するためのリクエストを作成します
 func createIndexEntryRequest(sheetName string, sheetId int64, rowIndex int, indexSheetId int64) []*sheets.Request {
-	// シート名をインデックスページに追加
-	//appendSheetNameRequest := &sheets.Request{
-	//	UpdateCells: &sheets.UpdateCellsRequest{
-	//		Start: &sheets.GridCoordinate{
-	//			SheetId:     indexSheetId, // インデックスページのID
-	//			RowIndex:    int64(rowIndex),
-	//			ColumnIndex: 0, // シート名の列
-	//		},
-	//		Rows: []*sheets.RowData{
-	//			{
-	//				Values: []*sheets.CellData{
-	//					{
-	//						UserEnteredValue: &sheets.ExtendedValue{
-	//							StringValue: &sheetName,
-	//						},
-	//					},
-	//				},
-	//			},
-	//		},
-	//		Fields: "userEnteredValue",
-	//	},
-	//}
+	link := fmt.Sprintf("#gid=%d", sheetId)
 
-	formulaValue := fmt.Sprintf("=HYPERLINK(\"#gid=%d\",\"%s\")", sheetId, sheetName)
+	// シート名とリンクのリクエストを生成
+	sheetNameRequest := google_internal.CreateSheetLayoutRequest(
+		indexSheetId,
+		&google_model.RangeOption{StartRow: int64(rowIndex + 2), EndRow: int64(rowIndex + 3), StartCol: 0, EndCol: 5},
+		true,
+		"LEFT",
+		"MIDDLE",
+		&sheets.Color{Red: 1, Green: 1, Blue: 1},
+		&sheets.Color{Red: 0, Green: 0.2, Blue: 1},
+		sheetName,
+		link,
+		&sheets.TextFormat{FontSize: 12},
+	)
 
-	// シートへのリンクを追加（ハイパーリンクの形式で）
-	appendLinkRequest := &sheets.Request{
-		UpdateCells: &sheets.UpdateCellsRequest{
-			Start: &sheets.GridCoordinate{
-				SheetId:     indexSheetId, // インデックスページのID
-				RowIndex:    int64(rowIndex),
-				ColumnIndex: 1, // リンクの列
-			},
-			Rows: []*sheets.RowData{
-				{
-					Values: []*sheets.CellData{
-						{
-							UserEnteredValue: &sheets.ExtendedValue{
-								FormulaValue: &formulaValue,
-							},
-						},
-					},
-				},
-			},
-			Fields: "userEnteredValue",
-		},
-	}
-
-	// 両方のリクエストを組み合わせて返す
-	return []*sheets.Request{appendLinkRequest}
+	return sheetNameRequest
 }
