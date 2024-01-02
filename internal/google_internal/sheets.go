@@ -2,6 +2,7 @@ package google_internal
 
 import (
 	"export-db-info/internal/model/google_model"
+	"fmt"
 	"google.golang.org/api/sheets/v4"
 )
 
@@ -15,6 +16,7 @@ func CreateSheetLayoutRequest(
 	bgColor *sheets.Color,
 	textColor *sheets.Color,
 	text string,
+	link string,
 	textFormat *sheets.TextFormat,
 ) []*sheets.Request {
 	var requests []*sheets.Request
@@ -46,7 +48,16 @@ func CreateSheetLayoutRequest(
 	// テキスト内容の設定
 	var cellValue *sheets.ExtendedValue
 	if text != "" {
-		cellValue = &sheets.ExtendedValue{StringValue: &text}
+		if link != "" {
+			// ハイパーリンク付きのテキスト
+			formulaValue := fmt.Sprintf("=HYPERLINK(\"%s\", \"%s\")", link, text)
+			cellValue = &sheets.ExtendedValue{
+				FormulaValue: &formulaValue,
+			}
+		} else {
+			// 通常のテキスト
+			cellValue = &sheets.ExtendedValue{StringValue: &text}
+		}
 	}
 
 	requests = append(requests, &sheets.Request{
